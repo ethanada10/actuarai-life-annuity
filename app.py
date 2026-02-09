@@ -4,7 +4,8 @@ import pandas as pd
 from mortality import load_tgf05_lx
 from actuarial import single_premium, annual_premium
 from data_gen import generate_dataset
-from ml_models import train_two_models
+from ml_fast import train_fast
+
 
 # Sets de l'énoncé (pour UI)
 X_SET = [20, 30, 40, 50, 60]
@@ -25,23 +26,22 @@ def get_lx_table():
     return load_tgf05_lx()
 
 @st.cache_resource
-def train_models_cached(N, seed, tariff_year):
-    """
-    Entraîne 2 modèles sur Pi1 et 2 modèles sur P.
-    Cache pour éviter de retrainer à chaque slider move.
-    """
+@st.cache_resource
+def train_models_cached(seed: int, tariff_year: int):
     lx_table = get_lx_table()
-    df = generate_dataset(lx_table, N=N, tariff_year=tariff_year, seed=seed)
+    # Dataset fixe (N=1000) => conforme à l'énoncé et stable pour Render
+    df = generate_dataset(lx_table, N=1000, tariff_year=tariff_year, seed=seed)
 
-    res_pi1 = train_two_models(df, target="Pi1", seed=42)
-    res_p = train_two_models(df, target="P", seed=42)
+    res_pi1 = train_fast(df, target="Pi1", seed=42)
+    res_p = train_fast(df, target="P", seed=42)
 
     return df, res_pi1, res_p
 
 
+
 with st.sidebar:
     st.header("1) Dataset (ML training)")
-    N = st.slider("Dataset size N (1–1000)", min_value=50, max_value=1000, value=500, step=50)
+   # N = st.slider("Dataset size N (1–1000)", min_value=50, max_value=1000, value=500, step=50)
     seed = st.number_input("Random seed", min_value=0, max_value=10_000, value=123, step=1)
     tariff_year = st.selectbox("Tariff year (for generation = year - x)", options=[2025], index=0)
 
@@ -55,7 +55,8 @@ with st.sidebar:
     A = st.selectbox("Annuity amount A (end of year)", options=A_SET, index=5)
 
     st.divider()
-    train_button = st.button("🚀 Generate dataset & Train models", type="primary")
+    train_button = st.button("🚀 Load dataset & Train (once)", type="primary")
+
 
 
 # Guardrail table limits (avoid x+m'+n beyond age max)
@@ -68,7 +69,8 @@ if x + mprime + n > age_max:
 # Training section
 if train_button:
     with st.spinner("Generating dataset & training models..."):
-        df, res_pi1, res_p = train_models_cached(N=N, seed=seed, tariff_year=tariff_year)
+       df, res_pi1, res_p = train_models_cached(seed=seed, tariff_year=tariff_year)
+
 
     st.success("Models trained ✅ (cached). You can now change contract inputs without retraining.")
 
