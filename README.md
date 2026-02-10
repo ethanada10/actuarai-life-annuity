@@ -115,7 +115,7 @@ Dans un terminal, se placer dans le dossier du projet puis :
 
 ```bash
 pip install -r requirements.txt
-
+```
 ## 5) Exécution des tests (console)
 Pour exécuter les tests étape par étape :
 python3 main.py
@@ -124,7 +124,9 @@ Test mortalité (valeurs l_x et kpx)
 Test pricing (Pi1 et P)
 Test dataset (aperçu + stats descriptives)
 Test ML (scores + hyperparamètres)
-6) Application Streamlit (local)
+
+
+## 6) Application Streamlit (local)
 Lancer l’app
 streamlit run app.py
 Fonctionnalités
@@ -138,7 +140,9 @@ Scores MAE/RMSE/R² + best hyperparams
 Preview du dataset généré
 ⚠️ Avec GridSearchCV, l’entraînement peut prendre du temps (selon la machine et N).
 Streamlit met les résultats en cache : si tu ne changes pas N ou seed, il ne retrain pas.
-7) Métriques de performance (exemple)
+
+
+## 7) Métriques de performance (exemple)
 Exemple obtenu sur un dataset d’entraînement N=500 (train/test split) :
 Target	Model	MAE	RMSE	R²
 Pi1	Ridge	5638.95	8550.53	0.6693
@@ -148,16 +152,18 @@ P	RandomForest	337.69	1094.67	0.8624
 Interprétation :
 RandomForest >> Ridge (non-linéarités + interactions)
 P est plus difficile car P = Pi1 / ä (ratio non-linéaire)
-8) (Option) Validation Excel
+
+
+## 8) (Option) Validation Excel
 Les fichiers fournis Deferred_Life_Annuity.xlsm / jeu_de_test servent principalement à :
 vérifier les conventions (primes en début d’année, rente en fin d’année, différé)
 comparer les valeurs attendues sur quelques jeux de paramètres
 Nous n’utilisons pas l’Excel directement dans le code, mais il peut servir de référence de validation.
 
-9) Dépannage (problèmes fréquents)
+## 9) Dépannage (problèmes fréquents)
 “Module not found”
 Assure-toi d’être dans le bon dossier avant d’exécuter :
-cd "/Users/ethanada/Desktop/Projet ActuarAI/LIFE INSURANCE PROJECT"
+cd "/Users/xxxxx/xxxx/Projet ActuarAI/LIFE INSURANCE PROJECT"
 Lecture de TGF05-TGH05.xls
 Si erreur Excel :
 vérifie que TGF05-TGH05.xls est bien présent dans le dossier
@@ -166,17 +172,9 @@ si besoin : réinstalle les dépendances pip install -r requirements.txt
 Dataset lent
 La génération peut être plus lente si beaucoup de tirages sont rejetés (contrainte âge max).
 Réduis N (ex : 300–500) ou augmente la puissance de la machine.
-10) Notes / Extensions possibles
-Ajouter la réserve nette 
-V
-t
-V 
-t
+
+
 ​	
-  comme cible supplémentaire (régression)
-Tester d’autres modèles (Gradient Boosting, etc.)
-Ajouter une évaluation plus robuste (k-fold sur plusieurs seeds)
-Ajouter un export automatique de tableaux LaTeX (scores/hyperparams/learning curves)
-Auteur
+ 
 Ethan Ada & Tom Cohen
 
